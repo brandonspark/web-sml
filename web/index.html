@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moscow ML in the browser</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.3rem; }
+  textarea { width: 100%; height: 16rem; font: 14px/1.4 ui-monospace, monospace;
+             box-sizing: border-box; resize: vertical; }
+  #controls { display: flex; gap: 1rem; align-items: center; margin: 0.6rem 0; flex-wrap: wrap; }
+  #output { font: 14px/1.4 ui-monospace, monospace; white-space: pre-wrap;
+            border: 1px solid #8884; padding: 0.6rem; min-height: 8rem; max-height: 24rem;
+            overflow-y: auto; }
+  .err { color: #c0392b; }
+  #status { color: #888; font-size: 0.9rem; }
+  button { padding: 0.3rem 1.2rem; }
+</style>
+</head>
+<body>
+<h1>Moscow ML in the browser</h1>
+<textarea id="code" spellcheck="false">fun fact 0 = 1
+  | fact n = n * fact (n - 1);
+
+val () = print ("fact 10 = " ^ Int.toString (fact 10) ^ "\n");
+</textarea>
+<div id="controls">
+  <button id="run" title="Ctrl+Enter">Run</button>
+  <button id="stop">Stop</button>
+  <label><input type="checkbox" id="quiet"> quiet (program output only)</label>
+  <label>timeout <input type="number" id="timeout" value="10" min="1" style="width:4rem"> s</label>
+  <span id="status"></span>
+</div>
+<pre id="output"></pre>
+<p><small>Runs entirely in your browser: the Moscow ML compiler (bytecode)
+executes on its Caml Light runtime compiled to WebAssembly, inside a Web
+Worker. Each run starts from a clean state.</small></p>
+<script type="module" src="main.js"></script>
+</body>
+</html>

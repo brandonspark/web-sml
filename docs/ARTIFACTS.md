@@ -33,6 +33,43 @@ Artifacts produced (all under `vendor/mosml/src`):
 | `compiler/mosmllnk` | linker bytecode image |
 | `mosmllib/*.ui,*.uo` | standard library interface/object files |
 
+## 32-bit bytecode rebuild (the artifacts actually shipped)
+
+The native build's bytecode artifacts are 64-bit flavored (extern data format
+LE64, and 64-bit constants folded into `mosmllib` by the `.mlp`→`.sml`
+preprocessing against `config/m.h`). The wasm runtime is wasm32, and 64→32
+extern shrinkage fails on constants like `Int.maxInt`.
+
+`scripts/build-bytecode-32.sh` therefore:
+
+1. writes a 32-bit `config/m.h` (used by `cpp` on `mosmllib/*.mlp`),
+2. replaces `src/camlrunm` with a shim that runs `dist/camlrunm-node.mjs`
+   (wasm32 runtime, NODERAWFS) under Node — the native binary is kept as
+   `src/camlrunm.native`,
+3. reruns `make -C mosmllib clean all` and `make -C compiler clean all`.
+
+The checked-in bootstrap images (`src/mosmlcmp`, `src/mosmllnk`,
+`src/mosmllex`, all LE32) run directly on the wasm runtime and recompile the
+whole library and compiler to LE32. Verify with the trailer check at the end
+of the script (extern magic `0x8495a6ba` = little-endian 32).
+
+Shipped browser assets (`dist/mosml-assets.data`, packed by
+`scripts/pack-assets.mjs`): `compiler/mosmltop` + `mosmllib/*.ui,*.uo` from
+this rebuild.
+
+## Wasm runtime build (`wasm/Makefile`)
+
+- Compiles the `BASEOBJS` source list plus `dynlib.c` (so the primitive
+  table matches the native `primitives` file; its `dlopen` fails cleanly at
+  runtime) and the generated `prims.c` from the native build.
+- `wasm/m.h`: 32-bit, little-endian, `ALIGNMENT` defined (bytewise operand
+  reads). `wasm/s.h`: mirrors the macOS feature set; unsupportable POSIX
+  calls exist as stubs that fail at runtime.
+- One source patch, applied to the build copy: `Tag_val`'s
+  `[-sizeof(value)]` becomes `[-(long)sizeof(value)]` — the unsigned index
+  folds into the wasm load offset immediate and traps (33-bit effective
+  address, no wraparound).
+
 ## Invocation model (from `src/launch/*.tpl`)
 
 - Toplevel: `camlrunm $stdlib/mosmltop -stdlib $stdlib [-P full] [-quietdec] [file.sml ...]`

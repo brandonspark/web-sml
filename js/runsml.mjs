@@ -18,7 +18,9 @@ function writeAssets(FS, assets) {
 
 /**
  * @param source   SML source text
- * @param options  {quiet}  quiet: suppress banner and `> val x = ...` echoes
+ * @param options  {quiet, onStdout, onStderr}
+ *                 quiet: suppress banner and `> val x = ...` echoes
+ *                 onStdout/onStderr: optional per-line streaming callbacks
  * @param env      {createRuntime, assets}
  *                 createRuntime: Emscripten module factory
  *                 assets: {manifest, data} from mosml-assets.{json,data}
@@ -28,8 +30,8 @@ export async function runSML(source, options, env) {
   const { createRuntime, assets } = env;
   let stdout = '', stderr = '';
   const runtime = await createRuntime({
-    print: (s) => { stdout += s + '\n'; },
-    printErr: (s) => { stderr += s + '\n'; },
+    print: (s) => { stdout += s + '\n'; options?.onStdout?.(s); },
+    printErr: (s) => { stderr += s + '\n'; options?.onStderr?.(s); },
     stdin: () => null,
   });
 
