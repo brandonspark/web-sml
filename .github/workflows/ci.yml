@@ -30,10 +30,19 @@ jobs:
           ./emsdk install "$EMSCRIPTEN_VERSION"
           ./emsdk activate "$EMSCRIPTEN_VERSION"
 
-      - name: Build everything
+      # emsdk_env.sh puts the emsdk root on PATH, which contains a directory
+      # named `node`; GNU make's posix_spawn stops at that entry with EACCES
+      # instead of continuing the PATH search. Scope the emsdk env to the one
+      # stage that needs emcc, and run the node-based stages with a clean env.
+      - name: Build native + wasm runtime
         run: |
-          source emsdk/emsdk_env.sh
-          make
+          make native
+          (source emsdk/emsdk_env.sh && make -C wasm)
+
+      - name: Rebuild bytecode (32-bit) and pack assets
+        run: |
+          scripts/build-bytecode-32.sh
+          node scripts/pack-assets.mjs
 
       - name: Install Playwright
         run: |

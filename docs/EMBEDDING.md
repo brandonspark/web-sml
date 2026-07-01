@@ -71,5 +71,5 @@ self-study exercises; do not use it as an exam proctor.
 
 The `dist/` artifacts are GPL-2.0-or-later derivative works of Moscow ML /
 Caml Light (your page's own code is unaffected — it merely runs alongside).
-Keep a visible link to https://github.com/brandonspark/mosml-wasm or the
+Keep a visible link to https://github.com/brandonspark/web-sml or the
 Moscow ML sources when hosting them. See `NOTICE`.
