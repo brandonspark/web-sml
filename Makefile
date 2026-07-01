@@ -28,6 +28,7 @@ assets: bytecode32
 	node scripts/pack-assets.mjs
 
 test:
+	node tests/node/highlight.test.mjs
 	node tests/node/run-bytecode.test.mjs
 	node tests/node/run-source.test.mjs
 	node tests/node/timeout.test.mjs

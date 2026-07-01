@@ -47,6 +47,11 @@ prefer a different layout, pass `workerUrl` in the options instead.
 - Style hooks: `.sml-exercise`, `.sml-pass`, `.sml-fail`, `.sml-not-run`,
   `.sml-output`, `.sml-controls` — see `examples/exercises/index.html` for a
   working stylesheet.
+- The editor live-highlights SML (own tiny tokenizer, no dependencies);
+  color the token classes `.sml-kw`, `.sml-con`, `.sml-str`, `.sml-com`,
+  `.sml-num`, `.sml-tyvar`, and set the monospace font on `.sml-editor`.
+  Pages that run highlight.js's `highlightAll()` are safe: the editor's
+  code element carries `nohighlight`.
 
 ### Conceptual (multiple-choice) questions
 
