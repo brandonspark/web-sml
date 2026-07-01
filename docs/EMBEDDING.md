@@ -44,6 +44,9 @@ prefer a different layout, pass `workerUrl` in the options instead.
   user's code. A test shows *pass*, *fail* (wrong answer / raised exception),
   or *not run* (the code didn't compile — diagnostics appear in the output
   pane).
+- Optional `solution` (SML text): adds a "Show solution" toggle that reveals
+  a highlighted read-only block (`.sml-solution-view`) below the editor,
+  leaving the student's attempt untouched.
 - Style hooks: `.sml-exercise`, `.sml-pass`, `.sml-fail`, `.sml-not-run`,
   `.sml-output`, `.sml-controls` — see `examples/exercises/index.html` for a
   working stylesheet.

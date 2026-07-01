@@ -66,6 +66,24 @@ status = await submit('fun fact = ');
 await check('non-compiling: 0 passed', status === '0/4 passed');
 await check('diagnostics shown in output', (await ex.locator('.sml-output').textContent()).includes('!'));
 
+// Solution reveal: hidden by default, toggles, highlighted; absent when the
+// exercise has no solution. Caret must be visible (inherited color).
+const factEx = page.locator('.sml-exercise').first();
+await check('solution hidden by default', await factEx.locator('.sml-solution-view').isHidden());
+await factEx.locator('.sml-solution').click();
+await check('solution revealed with highlighting',
+  !(await factEx.locator('.sml-solution-view').isHidden())
+  && (await factEx.locator('.sml-solution-view code').innerHTML()).includes('fact'));
+await factEx.locator('.sml-solution').click();
+await check('solution toggles back', await factEx.locator('.sml-solution-view').isHidden());
+await check('no solution button without solution',
+  await page.locator('.sml-exercise').nth(1).locator('.sml-solution').isHidden());
+await check('caret is not transparent or black-on-dark', await page.evaluate(() => {
+  const ta = document.querySelector('.sml-editor textarea');
+  const caret = getComputedStyle(ta).caretColor;
+  return caret !== 'rgba(0, 0, 0, 0)' && caret === getComputedStyle(ta).color;
+}));
+
 // Choice question: wrong pick marked and retryable; right pick locks + explains.
 const q = page.locator('#ex-choice');
 await q.locator('.sml-choices button').nth(0).click();
