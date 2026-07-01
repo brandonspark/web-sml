@@ -47,6 +47,26 @@ prefer a different layout, pass `workerUrl` in the options instead.
 - Style hooks: `.sml-exercise`, `.sml-pass`, `.sml-fail`, `.sml-not-run`,
   `.sml-output`, `.sml-controls` — see `examples/exercises/index.html` for a
   working stylesheet.
+
+### Conceptual (multiple-choice) questions
+
+`mountQuestion(el, q)` dispatches on `q.kind`: `"choice"` renders a
+client-side multiple-choice question (no SML runtime involved); anything
+else is a code exercise as above. Yes/no is just a two-choice question.
+
+```js
+mountQuestion(el, {
+  kind: 'choice',
+  title: 'Work vs. span',
+  prompt: 'Two parallel recursive calls on n/2 — the span recurrence is:',
+  choices: ['<code>S(n) = 2S(n/2) + c</code>', '<code>S(n) = S(n/2) + c</code>'],
+  answer: 1,                       // index into choices
+  explain: 'Only the longer branch counts under unbounded parallelism.',
+});
+```
+
+Wrong picks are marked (`.sml-fail`) and remain retryable; the right pick
+locks the question (`.sml-pass`) and reveals `explain` in `.sml-explain`.
 - `examples/exercises/index.html` is a complete example page; view it live
   via the repo's GitHub Pages demo.
 

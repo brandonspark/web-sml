@@ -66,6 +66,16 @@ status = await submit('fun fact = ');
 await check('non-compiling: 0 passed', status === '0/4 passed');
 await check('diagnostics shown in output', (await ex.locator('.sml-output').textContent()).includes('!'));
 
+// Choice question: wrong pick marked and retryable; right pick locks + explains.
+const q = page.locator('#ex-choice');
+await q.locator('.sml-choices button').nth(0).click();
+await check('choice: wrong pick marked', (await q.locator('li.sml-fail').count()) === 1);
+await q.locator('.sml-choices button').nth(1).click();
+await check('choice: right pick locks and explains',
+  (await q.locator('li.sml-pass').count()) === 1
+  && (await q.locator('.sml-choices button').first().isDisabled())
+  && !(await q.locator('.sml-explain').isHidden()));
+
 await browser.close();
 server.close();
 process.exit(failures ? 1 : 0);

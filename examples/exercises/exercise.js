@@ -104,3 +104,41 @@ export function mountExercise(container, exercise, options = {}) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !el('.sml-run').disabled) run();
   };
 }
+
+// Conceptual multiple-choice question (yes/no is just a two-choice question).
+// question: {title, prompt, choices: [html], answer: index, explain?: html}
+// Wrong picks are marked and can be retried; the right pick locks the
+// question and reveals the explanation.
+export function mountChoice(container, question) {
+  container.classList.add('sml-exercise', 'sml-choice');
+  container.innerHTML = `
+    <h3></h3>
+    <div class="sml-prompt"></div>
+    <ul class="sml-choices"></ul>
+    <div class="sml-explain" hidden></div>`;
+  container.querySelector('h3').textContent = question.title;
+  container.querySelector('.sml-prompt').innerHTML = question.prompt;
+
+  const ul = container.querySelector('.sml-choices');
+  question.choices.forEach((html, i) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.innerHTML = html;
+    btn.onclick = () => {
+      if (i !== question.answer) { li.classList.add('sml-fail'); return; }
+      li.classList.add('sml-pass');
+      for (const b of ul.querySelectorAll('button')) b.disabled = true;
+      const explain = container.querySelector('.sml-explain');
+      explain.innerHTML = question.explain ?? 'Correct!';
+      explain.hidden = false;
+    };
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+}
+
+// Dispatcher: mount by question.kind ('code' by default).
+export function mountQuestion(container, question, options) {
+  if (question.kind === 'choice') return mountChoice(container, question);
+  return mountExercise(container, question, options);
+}
