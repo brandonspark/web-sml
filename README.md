@@ -77,9 +77,18 @@ Runaway programs are stopped by the timeout (default 10 s).
 - `js/runsml.mjs` — core API: run one source string on a fresh runtime
 - `js/run-node.mjs` — Node variant with worker-thread timeout (used in tests)
 - `web/` — the page: `index.html`, `main.js`, `worker.js`
+- `examples/exercises/` — example consumer: graded SML exercises with hidden
+  tests (see `docs/EMBEDDING.md` to put these on your own site)
 - `tests/` — level 1 (wasm runtime runs precompiled bytecode), level 2
-  (toplevel evaluates source), timeout semantics, and Playwright browser
-  tests (uses the globally-installed `playwright`)
+  (toplevel evaluates source), timeout semantics, exercise grading, and
+  Playwright browser tests (uses the globally-installed `playwright`)
+
+## License
+
+Code in this repository: MIT. Moscow ML and everything built from it
+(the wasm runtime, the bytecode assets) are GPL-2.0-or-later with Caml Light
+(INRIA) heritage — see `NOTICE` and `docs/ARTIFACTS.md` for exact provenance.
+Hosting the built artifacts is fine; keep a link back to the sources.
 
 ## Porting notes (the three bugs that mattered)
 

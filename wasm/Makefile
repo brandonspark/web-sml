@@ -42,8 +42,8 @@ $(BUILD)/copied.stamp: $(wildcard $(RUNTIME)/*.c $(RUNTIME)/*.h) m.h s.h
 	# Wasm fix: [-sizeof(value)] is a huge UNSIGNED index; clang folds it
 	# into the load's unsigned offset immediate and the 33-bit effective
 	# address traps. A signed index compiles to a wrapping i32.add.
-	sed -i.bak 's/\[-sizeof(value)\]/[-(long)sizeof(value)]/' $(BUILD)/mlvalues.h
-	rm $(BUILD)/mlvalues.h.bak
+	sed 's/\[-sizeof(value)\]/[-(long)sizeof(value)]/' \
+	  $(RUNTIME)/mlvalues.h > $(BUILD)/mlvalues.h
 	touch $@
 
 # Browser artifact: in-memory filesystem (MEMFS).

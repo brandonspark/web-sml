@@ -1,0 +1,23 @@
+The MIT license in LICENSE covers the original code in this repository:
+the Emscripten build setup (wasm/), the JavaScript runner and web UI
+(js/, web/), the build scripts (scripts/), and the tests (tests/).
+
+It does NOT cover Moscow ML itself or artifacts built from it.
+
+Moscow ML (fetched into vendor/mosml by scripts/fetch-mosml.sh, pinned in
+docs/ARTIFACTS.md) is:
+
+  Copyright (C) 1994-2014 Sergei Romanenko, Peter Sestoft, Claudio Russo,
+  Ken Friis Larsen — GNU General Public License v2 or later,
+
+and its runtime is derived from Caml Light, Copyright (C) 1993 INRIA,
+whose license requires derivative works to be distributed under the same
+conditions and may require INRIA permission for *commercial* redistribution
+(see copyrght/copyrght.cl in the Moscow ML source).
+
+Consequently, the BUILT ARTIFACTS this project produces and serves —
+dist/camlrunm.wasm, dist/camlrunm.mjs, dist/camlrunm-node.*, and the
+bytecode bundle dist/mosml-assets.data — are derivative works of Moscow ML
+and Caml Light and are distributed under those terms (GPL-2.0-or-later).
+If you host them, keep a link to this repository (which contains the
+complete corresponding source pipeline) or to the Moscow ML sources.

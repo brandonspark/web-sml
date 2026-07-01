@@ -6,8 +6,18 @@ import { readFile } from 'node:fs/promises';
 import { join, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { execSync } from 'node:child_process';
 
-const { chromium } = createRequire(import.meta.url)('/opt/homebrew/lib/node_modules/playwright');
+// Resolve playwright: local install if present, else the global npm root.
+const require = createRequire(import.meta.url);
+function resolvePlaywright() {
+  for (const spec of ['playwright',
+      join(execSync('npm root -g').toString().trim(), 'playwright')]) {
+    try { return require(spec); } catch { /* next */ }
+  }
+  throw new Error('playwright not found: npm install -g playwright && playwright install chromium');
+}
+const { chromium } = resolvePlaywright();
 const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 
 const MIME = {

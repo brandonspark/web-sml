@@ -31,7 +31,9 @@ test:
 	node tests/node/run-bytecode.test.mjs
 	node tests/node/run-source.test.mjs
 	node tests/node/timeout.test.mjs
+	node tests/node/exercise.test.mjs
 	node tests/browser/browser.test.mjs
+	node tests/browser/exercises.test.mjs
 
 serve:
 	@echo "open http://127.0.0.1:8000/web/"
