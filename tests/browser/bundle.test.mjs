@@ -1,5 +1,16 @@
 // The zip must be self-sufficient: unzip it anywhere, serve it, and the
 // bundled example page runs SML — no files from the repo checkout.
+import { writeSync } from 'node:fs';
+
+// CI watchdog: a hang anywhere below becomes a diagnosable failure. The
+// message is written synchronously so pipe buffering cannot swallow it.
+const WATCHDOG_MS = 150000;
+const watchdog = setTimeout(() => {
+  writeSync(2, `WATCHDOG: test still running after ${WATCHDOG_MS}ms, aborting\n`);
+  process.exit(3);
+}, WATCHDOG_MS);
+watchdog.unref();
+
 import { createServer } from 'node:http';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { join, dirname, extname } from 'node:path';
@@ -19,7 +30,8 @@ const { chromium } = (() => {
 
 const repo = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const root = await mkdtemp(join(tmpdir(), 'web-sml-bundle-'));
-execSync(`unzip -q ${join(repo, 'dist/web-sml.zip')} -d ${root}`);
+execSync(`unzip -o -q ${join(repo, 'dist/web-sml.zip')} -d ${root}`,
+  { timeout: 60000, stdio: ['ignore', 'inherit', 'inherit'] });
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
   '.wasm': 'application/wasm', '.json': 'application/json',

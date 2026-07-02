@@ -1,6 +1,17 @@
 // M8 browser tests: valid programs run, type errors report diagnostics,
 // infinite loops time out, and the page stays usable after a timeout.
 // Uses the globally-installed playwright (chromium).
+import { writeSync } from 'node:fs';
+
+// CI watchdog: a hang anywhere below becomes a diagnosable failure. The
+// message is written synchronously so pipe buffering cannot swallow it.
+const WATCHDOG_MS = 150000;
+const watchdog = setTimeout(() => {
+  writeSync(2, `WATCHDOG: test still running after ${WATCHDOG_MS}ms, aborting\n`);
+  process.exit(3);
+}, WATCHDOG_MS);
+watchdog.unref();
+
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { join, dirname, extname } from 'node:path';
