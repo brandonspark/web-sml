@@ -57,6 +57,11 @@ async function submit(code) {
 let status = await submit('fun fact 0 = 1 | fact n = n * fact (n-1)');
 await check('correct solution: all tests pass', status === '4/4 passed');
 await check('pass rows rendered', (await ex.locator('.sml-pass').count()) === 4);
+await check('no output pane on silent pass', await ex.locator('.sml-output').isHidden());
+
+status = await submit('fun fact n = (print "hi\\n"; 1)');
+await check('program output still shown', !(await ex.locator('.sml-output').isHidden())
+  && (await ex.locator('.sml-output').textContent()).includes('hi'));
 
 status = await submit('fun fact n = 1');
 await check('wrong solution: partial pass', status === '2/2 passed' ? false : /\/4 passed/.test(status) && !status.startsWith('4/'));
