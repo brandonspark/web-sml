@@ -52,10 +52,11 @@ jobs:
       - name: Test
         run: make test
 
-      - name: Assemble Pages site (demo)
+      - name: Assemble Pages site (demo + downloadable bundle)
         run: |
           mkdir -p _site
           cp -r web dist js examples _site/
+          cp dist/web-sml.zip _site/
           printf '<meta http-equiv="refresh" content="0; url=web/">' > _site/index.html
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1

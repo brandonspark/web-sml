@@ -27,6 +27,10 @@ bytecode32: wasm
 assets: bytecode32
 	node scripts/pack-assets.mjs
 
+# 5. Single distributable: everything a website needs to run SML.
+bundle:
+	scripts/make-bundle.sh
+
 test:
 	node tests/node/highlight.test.mjs
 	node tests/node/run-bytecode.test.mjs
@@ -35,6 +39,8 @@ test:
 	node tests/node/exercise.test.mjs
 	node tests/browser/browser.test.mjs
 	node tests/browser/exercises.test.mjs
+	$(MAKE) bundle
+	node tests/browser/bundle.test.mjs
 
 serve:
 	@echo "open http://127.0.0.1:8000/web/"

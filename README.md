@@ -13,6 +13,13 @@ Each click of Run spawns a fresh Web Worker with a fresh runtime instance
 (clean heap, clean filesystem). Timeouts and Stop are implemented by
 terminating the Worker; a crashed or stopped run cannot affect the next one.
 
+## Using it on your website
+
+Download [web-sml.zip](https://brandonspark.github.io/web-sml/web-sml.zip) —
+one self-contained bundle (runtime, compiler assets, worker, exercise
+widget, docs, licenses) — unzip into your site, and follow the included
+`EMBEDDING.md`. No build required.
+
 ## Building
 
 Prerequisites: Xcode CLT (clang, make, perl), Emscripten (`brew install

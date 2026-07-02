@@ -3,6 +3,14 @@
 Everything is client-side static files; any static host works (GitHub Pages,
 Netlify, nginx, `python3 -m http.server`).
 
+## The short version
+
+Download **[web-sml.zip](https://brandonspark.github.io/web-sml/web-sml.zip)**
+(also produced locally by `make bundle`), unzip it into your site, and serve
+it. The zip contains everything below plus this guide, the licenses, and a
+`VERSION` provenance file. Rename the `web-sml/` folder however you like —
+just keep its internal structure.
+
 ## Files to serve
 
 Copy these directories **preserving their relative layout** (the modules
