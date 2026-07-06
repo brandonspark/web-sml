@@ -113,9 +113,10 @@ locks the question (`.sml-pass`) and reveals `explain` in `.sml-explain`.
 
 ## Honesty box
 
-Grading is fully client-side: the tests are visible in page source, and a
-determined user can `print` the sentinel lines themselves. Fine for
-self-study exercises; do not use it as an exam proctor.
+Grading is fully client-side. Sentinel spoofing from within the program is
+defeated (per-run random markers), but the tests and solutions are visible
+in page source and anyone can open devtools. Fine for self-study exercises;
+do not use it as an exam proctor.
 
 ## License
 
