@@ -100,8 +100,10 @@ await ex.locator('.sml-share').click();
 const hash = await page.evaluate(() => location.hash);
 await check('share sets a #sml= fragment', /^#sml=\d+\./.test(hash));
 await page.goto(`${base}/examples/exercises/index.html${hash}`);
-await check('shared link restores the code',
-  (await page.locator('#ex-fact textarea').inputValue()).includes('shared attempt'));
+await page.waitForFunction(() =>
+  document.querySelector('#ex-fact textarea')?.value.includes('shared attempt'),
+  null, { timeout: 10000 });
+await check('shared link restores the code', true);
 await page.goto(`${base}/examples/exercises/index.html`);
 
 // Solution reveal: hidden by default, toggles, highlighted; absent when the
