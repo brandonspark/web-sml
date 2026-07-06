@@ -52,6 +52,17 @@ prefer a different layout, pass `workerUrl` in the options instead.
   user's code. A test shows *pass*, *fail* (wrong answer / raised exception),
   or *not run* (the code didn't compile — diagnostics appear in the output
   pane).
+- A **Share** button copies a link (`#sml=` fragment) that reopens the page
+  with the visitor's exact code in that exercise's editor. Work in progress
+  also persists in localStorage across reloads; Reset forgets it.
+- Grading sentinels carry a per-run random marker and always start at a
+  line boundary, so user code that prints (even without a trailing newline,
+  even printing sentinel-shaped lines) can neither corrupt the output pane
+  nor spoof results. If nothing ran (compile error), the widget reports
+  "did not compile" instead of listing never-run tests.
+- With `options.ide`, the Monaco/millet assets lazy-load when the exercise
+  nears the viewport (or is focused) — visitors who never touch an exercise
+  never download them.
 - Optional `solution` (SML text): adds a "Show solution" toggle that reveals
   a highlighted read-only block (`.sml-solution-view`) below the editor,
   leaving the student's attempt untouched.

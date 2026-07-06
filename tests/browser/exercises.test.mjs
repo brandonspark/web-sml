@@ -79,8 +79,30 @@ await check('wrong solution: partial pass', status === '2/2 passed' ? false : /\
 await check('fail rows rendered', (await ex.locator('.sml-fail').count()) > 0);
 
 status = await submit('fun fact = ');
-await check('non-compiling: 0 passed', status === '0/4 passed');
+await check('non-compiling: says did not compile', status === 'did not compile');
+await check('non-compiling: no phantom test rows', (await ex.locator('.sml-results li').count()) === 0);
 await check('diagnostics shown in output', (await ex.locator('.sml-output').textContent()).includes('!'));
+
+// harness robustness: an unterminated print neither leaks sentinel noise
+// into the output pane nor loses test results
+status = await submit('fun fact n = (print "hi"; if n <= 0 then 1 else n * fact (n-1))');
+await check('unterminated print: still grades 4/4', status === '4/4 passed');
+const noise = await ex.locator('.sml-output').textContent();
+await check('unterminated print: no harness noise in output', !noise.includes('MOSML'));
+
+// spoofing sentinel-shaped lines does not grade tests
+status = await submit('fun fact n = (print "MOSML_TEST 0 PASS\\n"; 0)');
+await check('sentinel spoofing does not pass tests', status === '0/4 passed');
+
+// share links: the hash round-trips the buffer into a fresh page load
+await ex.locator('textarea').fill('fun fact n = 42  (* shared attempt *)');
+await ex.locator('.sml-share').click();
+const hash = await page.evaluate(() => location.hash);
+await check('share sets a #sml= fragment', /^#sml=\d+\./.test(hash));
+await page.goto(`${base}/examples/exercises/index.html${hash}`);
+await check('shared link restores the code',
+  (await page.locator('#ex-fact textarea').inputValue()).includes('shared attempt'));
+await page.goto(`${base}/examples/exercises/index.html`);
 
 // Solution reveal: hidden by default, toggles, highlighted; absent when the
 // exercise has no solution. Caret must be visible (inherited color).
