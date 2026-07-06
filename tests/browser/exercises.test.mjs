@@ -134,6 +134,25 @@ await check('choice: right pick locks and explains',
   && (await q.locator('.sml-choices button').first().isDisabled())
   && !(await q.locator('.sml-explain').isHidden()));
 
+// playground: echoes by default, hidden in quiet mode, exit status shown
+const pg = page.locator('#playground');
+await pg.locator('textarea').fill('val x = 2 + 3;');
+await pg.locator('.sml-run').click();
+await page.waitForFunction(() =>
+  /done|error|timed/.test(document.querySelector('#playground .sml-status').textContent),
+  null, { timeout: 60000 });
+await check('playground: toplevel echo shown',
+  (await pg.locator('.sml-output').textContent()).includes('val x = 5 : int'));
+await check('playground: exit status', (await pg.locator('.sml-status').textContent()).startsWith('done'));
+await pg.locator('.sml-quiet input').check();
+await pg.locator('textarea').fill('val x = 2 + 3;\nval () = print "only me\\n";');
+await pg.locator('.sml-run').click();
+await page.waitForFunction(() =>
+  /done|error|timed/.test(document.querySelector('#playground .sml-status').textContent),
+  null, { timeout: 60000 });
+const pgOut = await pg.locator('.sml-output').textContent();
+await check('playground: quiet hides echoes', pgOut.includes('only me') && !pgOut.includes('val x'));
+
 await browser.close();
 server.close();
 process.exit(failures ? 1 : 0);
